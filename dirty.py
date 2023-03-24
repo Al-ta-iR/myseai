@@ -37,6 +37,35 @@ bot = telebot.TeleBot(YOUR_BOT_API_TOKEN)
 bot.chat_data = {}
 request_global = ''
 
+def translate_phrase(phrase):
+    # translator = Translator(to_lang="en", from_lang="ru")
+    translation = translator.translate(phrase)
+    return translation
+
+
+
+
+# Define the inline keyboard markup with the translate button
+translate_button = telebot.types.InlineKeyboardButton(text='Translate to Rus', callback_data='translate')
+
+# Define the inline keyboard markup with the translate button in a list
+translate_keyboard = telebot.types.InlineKeyboardMarkup().add(translate_button)
+
+# Define the message handler function
+def add_translate_answer_button(message):
+    # Send the incoming message back to the user with the translate button
+    bot.send_message(chat_id=message.chat.id, text=message.text, reply_markup=translate_keyboard)
+
+# Define the callback query handler function
+@bot.callback_query_handler(func=lambda call: call.data == 'translate')
+def handle_translate_callback(message):
+    # Translate the original message text into Cyrillic and send it as a new message
+    translated_text = translate_phrase(message.text)
+    bot.send_message(chat_id=message.message.chat.id, text=translated_text)
+
+
+
+
 def is_cyrillic(text):  # не работает
     cyrillic_pattern = re.compile('[а-яА-ЯёЁ]+')
     cyrillic_result = bool(cyrillic_pattern.fullmatch(text))
@@ -126,6 +155,7 @@ def show_text(message):
     answer = youcom.ask(request)["response"]
     bot.delete_message(message.chat.id, message.message_id + 1)
     bot.send_message(message.chat.id, answer)
+    add_translate_answer_button(message)
     bot.send_message(message.chat.id, 'Please write your request:')
 
 def send_mail(

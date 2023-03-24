@@ -107,7 +107,7 @@ def show_text(message):
     request = request_global.lower()
     request = translate_phrase(request)
     answer = youcom.ask(request)["response"]
-    bot.delete_message(message.chat.id, message.message_id)
+    bot.delete_message(message.chat.id, message.message_id + 1)
     bot.send_message(message.chat.id, answer)
     bot.send_message(message.chat.id, 'Please write your request:')
 
