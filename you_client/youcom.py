@@ -74,12 +74,9 @@ def ask(
 if __name__ == "__main__":
     # if len(argv) > 1:
     prompt = "сколько пальцев на руке"
-    # prompt   = " ".join(argv[1:])
     response = ask(prompt)
-    # print(type(response))
-    # print(dumps(response, indent=4))
     
-    decoded = response["response"].encode().decode('unicode_escape')
+    decoded = response["response"]
     print(decoded)
     # print(response["response"])
     # else:
