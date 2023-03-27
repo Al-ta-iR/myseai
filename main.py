@@ -9,8 +9,9 @@ try:
     import time
     import smtplib
     import scout
-    from you_client import youcom
+    import google
     from translate import Translator
+    from you_client import youcom
 
 
     email_flag = 0
@@ -58,15 +59,16 @@ try:
         bot.send_message(message.chat.id, 'Please write your request:')
 
 
-    @bot.message_handler(func=lambda message: True and message.text != 'SCOUT' and message.text != 'YCOM')
+    @bot.message_handler(func=lambda message: True and message.text != 'SCOUT' and message.text != 'YCOM' and message.text != 'GOOG')
     def handle_message(message):
         request = message.text.lower()
-        chars_to_check = ['s:', 'с:', 'c:', 'ц:', 'y:', 'у:', 'ю:']
+        chars_to_check = ['s:', 'с:', 'c:', 'ц:', 'y:', 'у:', 'ю:', 'g:', 'г:']
         if not any(char in request for char in chars_to_check):
             button1 = types.KeyboardButton('SCOUT')
             button2 = types.KeyboardButton('YCOM')
-            keyboard = types.ReplyKeyboardMarkup(row_width=2, resize_keyboard=True)
-            keyboard.add(button1, button2)
+            button3 = types.KeyboardButton('GOOG')
+            keyboard = types.ReplyKeyboardMarkup(row_width=3, resize_keyboard=True)
+            keyboard.add(button1, button2, button3)
             global request_global
             request_global = request
             bot.send_message(message.chat.id, 'Please select an option of search:', reply_markup=keyboard)
@@ -91,6 +93,12 @@ try:
             bot.send_message(message.chat.id, answer)
             bot.send_message(message.chat.id, 'Please write your request:')
 
+        elif any(s in request.lower() for s in ('g:', 'г:')):
+            answer = google.search_google(request)
+            bot.delete_message(message.chat.id, message.message_id + 1)
+            bot.send_message(message.chat.id, answer)
+            bot.send_message(message.chat.id, 'Please write your request:')
+
 
     @bot.message_handler(func=lambda message: message.text == 'SCOUT')
     def show_text(message):
@@ -111,6 +119,17 @@ try:
         bot.delete_message(message.chat.id, message.message_id + 1)
         bot.send_message(message.chat.id, answer)
         bot.send_message(message.chat.id, 'Please write your request:')
+
+
+    @bot.message_handler(func=lambda message: message.text == 'GOOG')
+    def show_text(message):
+        hide_buttons(message)
+        request = request_global.lower()
+        answer = google.search_google(request)
+        bot.delete_message(message.chat.id, message.message_id + 1)
+        bot.send_message(message.chat.id, answer)
+        bot.send_message(message.chat.id, 'Please write your request:')
+
 
     def send_mail(
         subject,
