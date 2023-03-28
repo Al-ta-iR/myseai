@@ -8,9 +8,9 @@ try:
     import re
     import time
     import smtplib
-    import scout
+    import translating
     import google
-    from translate import Translator
+    import scout
     from you_client import youcom
 
 
@@ -37,12 +37,6 @@ try:
     request_global = ''
 
 
-    def translate_phrase(phrase):
-        translator = Translator(to_lang="en", from_lang="ru")
-        translation = translator.translate(phrase)
-        return translation
-
-
     def hide_buttons(message):
         hide_markup = types.ReplyKeyboardRemove()
         bot.send_message(message.chat.id, "Wait ...", reply_markup=hide_markup)
@@ -59,16 +53,17 @@ try:
         bot.send_message(message.chat.id, 'Please write your request:')
 
 
-    @bot.message_handler(func=lambda message: True and message.text != 'SCOUT' and message.text != 'YCOM' and message.text != 'GOOG')
+    @bot.message_handler(func=lambda message: True and message.text != 'SCOUT' and message.text != 'YCOM' and message.text != 'GOOG' and message.text != 'TRAN')
     def handle_message(message):
         request = message.text.lower()
-        chars_to_check = ['s:', 'с:', 'c:', 'ц:', 'y:', 'у:', 'ю:', 'g:', 'г:']
+        chars_to_check = ['s:', 'с:', 'c:', 'ц:', 'y:', 'у:', 'ю:', 'g:', 'г:', 't:', 'т:', 'п:']
         if not any(char in request for char in chars_to_check):
-            button1 = types.KeyboardButton('SCOUT')
+            button1 = types.KeyboardButton('SCOU')
             button2 = types.KeyboardButton('YCOM')
             button3 = types.KeyboardButton('GOOG')
-            keyboard = types.ReplyKeyboardMarkup(row_width=3, resize_keyboard=True)
-            keyboard.add(button1, button2, button3)
+            button4 = types.KeyboardButton('TRAN')
+            keyboard = types.ReplyKeyboardMarkup(row_width=4, resize_keyboard=True)
+            keyboard.add(button1, button2, button3, button4)
             global request_global
             request_global = request
             bot.send_message(message.chat.id, 'Please select an option of search:', reply_markup=keyboard)
@@ -87,7 +82,7 @@ try:
             bot.send_message(message.chat.id, 'Please write your request:')
 
         elif any(s in request.lower() for s in ('y:', 'ю:', 'у:')):
-            request = translate_phrase(request)
+            request = translating.translate_request(request)
             answer = youcom.ask(request)["response"]
             bot.delete_message(message.chat.id, message.message_id + 1)
             bot.send_message(message.chat.id, answer)
@@ -95,6 +90,12 @@ try:
 
         elif any(s in request.lower() for s in ('g:', 'г:')):
             answer = google.search_google(request)
+            bot.delete_message(message.chat.id, message.message_id + 1)
+            bot.send_message(message.chat.id, answer)
+            bot.send_message(message.chat.id, 'Please write your request:')
+
+        elif any(s in request.lower() for s in ('t:', 'т:', 'п:')):
+            answer = translating.translate_request(request)
             bot.delete_message(message.chat.id, message.message_id + 1)
             bot.send_message(message.chat.id, answer)
             bot.send_message(message.chat.id, 'Please write your request:')
@@ -114,7 +115,7 @@ try:
     def show_text(message):
         hide_buttons(message)
         request = request_global.lower()
-        request = translate_phrase(request)
+        request = translating.translate_request(request)
         answer = youcom.ask(request)["response"]
         bot.delete_message(message.chat.id, message.message_id + 1)
         bot.send_message(message.chat.id, answer)
@@ -126,6 +127,16 @@ try:
         hide_buttons(message)
         request = request_global.lower()
         answer = google.search_google(request)
+        bot.delete_message(message.chat.id, message.message_id + 1)
+        bot.send_message(message.chat.id, answer)
+        bot.send_message(message.chat.id, 'Please write your request:')
+
+
+    @bot.message_handler(func=lambda message: message.text == 'TRAN')
+    def show_text(message):
+        hide_buttons(message)
+        request = request_global.lower()
+        answer = translating.translate_request(request)
         bot.delete_message(message.chat.id, message.message_id + 1)
         bot.send_message(message.chat.id, answer)
         bot.send_message(message.chat.id, 'Please write your request:')

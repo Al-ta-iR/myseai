@@ -37,10 +37,10 @@ bot = telebot.TeleBot(YOUR_BOT_API_TOKEN)
 bot.chat_data = {}
 request_global = ''
 
-def translate_phrase(phrase):
-    # translator = Translator(to_lang="en", from_lang="ru")
-    translation = translator.translate(phrase)
-    return translation
+# def translate_phrase(phrase):
+#     # translator = Translator(to_lang="en", from_lang="ru")
+#     translation = translator.translate(phrase)
+#     return translation
 
 
 
@@ -57,11 +57,11 @@ def add_translate_answer_button(message):
     bot.send_message(chat_id=message.chat.id, text=message.text, reply_markup=translate_keyboard)
 
 # Define the callback query handler function
-@bot.callback_query_handler(func=lambda call: call.data == 'translate')
-def handle_translate_callback(message):
-    # Translate the original message text into Cyrillic and send it as a new message
-    translated_text = translate_phrase(message.text)
-    bot.send_message(chat_id=message.message.chat.id, text=translated_text)
+# @bot.callback_query_handler(func=lambda call: call.data == 'translate')
+# def handle_translate_callback(message):
+#     # Translate the original message text into Cyrillic and send it as a new message
+#     translated_text = translate_phrase(message.text)
+#     bot.send_message(chat_id=message.message.chat.id, text=translated_text)
 
 
 
