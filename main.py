@@ -53,7 +53,7 @@ try:
         bot.send_message(message.chat.id, 'Please write your request:')
 
 
-    @bot.message_handler(func=lambda message: True and message.text != 'SCOUT' and message.text != 'YCOM' and message.text != 'GOOG' and message.text != 'TRAN')
+    @bot.message_handler(func=lambda message: True and message.text != 'SCOU' and message.text != 'YCOM' and message.text != 'GOOG' and message.text != 'TRAN')
     def handle_message(message):
         request = message.text.lower()
         chars_to_check = ['s:', 'с:', 'c:', 'ц:', 'y:', 'у:', 'ю:', 'g:', 'г:', 't:', 'т:', 'п:']
@@ -101,7 +101,7 @@ try:
             bot.send_message(message.chat.id, 'Please write your request:')
 
 
-    @bot.message_handler(func=lambda message: message.text == 'SCOUT')
+    @bot.message_handler(func=lambda message: message.text == 'SCOU')
     def show_text(message):
         hide_buttons(message)
         request = request_global.lower()
