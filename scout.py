@@ -30,3 +30,8 @@ def search_scout(request):
     }
     response = requests.post(url, json=data, headers=headers)
     return response.json()["content"]
+
+
+if __name__ == "__main__":
+    print(search_scout('Hi, how are you'))
+    # print(translate_request('Привет друг. Как дела'))
