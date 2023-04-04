@@ -51,8 +51,8 @@ try:
 
     def set_chat_id(message):
         global chat_id
-        if chat_id == '':
-            chat_id = message.chat.id
+        # if chat_id == '':
+        chat_id = message.chat.id
 
     def hide_buttons(message):
         hide_markup = types.ReplyKeyboardRemove()
